@@ -30,11 +30,14 @@ AsyncWrap.prototype.setup = function (init, before, after) {
       self.skip -= 1;
     }
 
-    nextTick.call(process, function () {
+    var args = Array.from(arguments);
+    var callback = args[0];
+    args[0] = function () {
       if (enabled) before.call(handle);
       callback();
       if (enabled) after.call(handle);
-    });
+    };
+    nextTick.apply(process, args);
   };
 
   // Enable
